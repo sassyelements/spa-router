@@ -197,3 +197,47 @@ const urlRoutes = {
 
 router.setRoutes(urlRoutes).initRouter({ selector: 'nav a' });
 ```
+
+## Custom Events
+SPA Router provides one custom event called `locationChange`. This event is
+listening for any changes that happen when the URL is changed. It can come in
+handy when we want to detect those changes and do something with the DOM. The
+History API doesn't provide any event that listens for state changes e.g
+`pushState` and `replaceState`. There are many questions on StackOverflow
+like [this question](https://stackoverflow.com/questions/4570093/how-to-get-notified-about-changes-of-the-history-via-history-pushstate) about detecting the changes in URL. However all the solutions there are either some hacks or not very helpful at least to me. Many of the things I couldn't even understand but with custom events we can solve this problem very easily.
+
+As the SPA Router is all about path and hash changes we can add it to `window` and
+listen for the location changes.
+
+For example we want to add an element to the DOM and remove it when we are on a
+certain URL. Let's say when the `404` page is loaded we want to add a `div` with a
+message `Our Server is a Loser!`. When the user is back on home page we want
+to remove that message.
+
+```javascript
+window.addEventListener(`locationChange`, (event) => {
+    // First extract the pathname
+    const path = event.target.location.pathname;
+    // Select the body element
+    const body = document.querySelector('body');
+    // Assign the HTML element to message
+    const message = `<div id="404-message">Our Server is a Loser!</div>`;
+
+    // Check if we are on 404 page also add another condition to our if clause
+    // to make sure we do not add the same element over and over again
+    if (path === '/404' && body.lastChild.id !== '404-message') {
+        // Insert the element to the body after all other elements as a
+        // last child
+        body.insertAdjacentHTML('beforeend', message);
+    }
+
+    // Select the message element that we added
+    const messageElem = document.querySelector('#404-message');
+    // Check if we are on the home page and message element exist
+    if (path === '/' && messageElem) {
+        // Either use remove() method or removeChild() both will work
+        // messageElem.remove();        
+        body.removeChild(body.lastChild);
+    }
+});
+```
