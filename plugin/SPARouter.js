@@ -38,6 +38,9 @@ class SPARouter {
 
         window.history.pushState({}, "", event.target.href);
         this.locationHandler();
+
+        // When a state is pushed locationChange event is fired
+        this.#handleCustomEvents({ type: 'locationChange' });
     }
 
     async locationHandler() {
@@ -78,6 +81,11 @@ class SPARouter {
         })
 
         return actualPaths[0].startsWith('#');
+    }
+
+    #handleCustomEvents({ type }) {
+        const event = new CustomEvent(type, { bubbles: true });
+        dispatchEvent(event);
     }
 
 }
