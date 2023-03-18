@@ -45,6 +45,19 @@ After the plugin is imported you then want to define the routes. As the plugin
 supports both pathnames and hashes the routes objects are slightly different.
 Pathnames uses `/` and hashes obviously uses `#`.
 
+### Your `index.html` File
+Your `index.html` file must either have a `main` tag or a `div` or any other element with a class called `main`. This is the main container where HTML
+from templates is loaded. See the example below how it should look like.
+```html
+[...]
+
+<body>
+    <main class="main"></main>
+</body>
+
+[...]
+```
+
 ### URL Routes Object
 ```javascript
 const urlRoutes = {
